@@ -1,0 +1,33 @@
+/* CSS for LearnBit, to make it look clean like my Task Lister */
+
+/* Style the body to set up the page */
+body {
+  font-family: Arial; /* Simple font, easy to read */
+  text-align: center; /* Center all elements for a neat look */
+  background: #f0f0f0; /* Light gray background, not too bright */
+  padding: 20px; /* Space around the edges */
+}
+
+/* Style the textarea for code input */
+textarea {
+  width: 300px; /* Fixed width so it’s not too big */
+  margin: 10px; /* Space between elements */
+  padding: 5px; /* Padding inside the textarea */
+}
+
+/* Style the button for checking code */
+button {
+  padding: 10px 20px; /* Bigger button for easy clicking */
+  cursor: pointer; /* Show hand icon when hovering */
+}
+
+/* Style the feedback div for output */
+#feedback {
+  margin: 20px; /* Space around the feedback text */
+  font-size: 16px; /* Readable text size */
+}
+
+/* Style the progress list */
+#progress {
+  list-style: none; /* No bullets for the list */
+}
