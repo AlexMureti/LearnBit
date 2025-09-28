@@ -1,58 +1,86 @@
-/* CSS for LearnBit, to make it look clean like my Task Lister */
+/* styles.css - Clean, simple styling for LearnBit */
 
-/* Style the body to set up the page */
+/* Page setup */
 body {
-  font-family: Arial; /* Simple font, easy to read */
-  text-align: center; /* Center all elements for a neat look */
-  background: #f0f0f0; /* Light gray background, not too bright */
-  padding: 20px; /* Space around the edges */
+  font-family: Arial, sans-serif; /* clean, easy-to-read font */
+  background: #f0f0f0;           /* soft gray background */
+  max-width: 900px;              /* keep content narrow for readability */
+  margin: 20px auto;             /* center everything */
+  padding: 20px;
+  line-height: 1.5;
+  text-align: center;            /* center text for simplicity */
 }
 
-/* Style the textarea for code input */
-textarea {
-  width: 300px; /* Fixed width so it’s not too big */
-  margin: 10px; /* Space between elements */
-  padding: 5px; /* Padding inside the textarea */
+/* Header and footer */
+header, footer {
+  margin-bottom: 20px;
 }
-
-/* Style the button for checking code */
-button {
-  padding: 10px 20px; /* Bigger button for easy clicking */
-  cursor: pointer; /* Show hand icon when hovering */
+header h1 {
+  margin-bottom: 5px;
 }
-
-/* Style the feedback div for output */
-#feedback {
-  margin: 20px; /* Space around the feedback text */
-  font-size: 16px; /* Readable text size */
-}
-
-/* Style the progress list */
-#progress {
-  list-style: none; /* No bullets for the list */
-}
-/* style.css - tiny clean styles so it looks not broken */
-body {
-  font-family: Arial, sans-serif;
-  max-width: 900px;
-  margin: 20px auto;
-  padding: 10px;
-  line-height: 1.4;
-}
-
-textarea {
-  font-family: monospace;
+.tagline {
   font-size: 14px;
+  color: #555;
+}
+footer p {
+  font-size: 12px;
+  color: #777;
 }
 
+/* Code input box */
+textarea {
+  width: 90%;             /* wide but responsive */
+  max-width: 600px;       /* don’t let it stretch too much */
+  height: 120px;
+  font-family: monospace; /* code-like font */
+  font-size: 14px;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;       /* let user stretch vertically */
+}
+
+/* Buttons */
 button {
-  padding: 8px 12px;
-  margin-top: 6px;
+  padding: 10px 20px;
+  margin: 6px;
+  border: none;
+  border-radius: 4px;
+  background: #4a90e2;   /* calm blue */
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+button:hover {
+  background: #357abd;   /* slightly darker on hover */
 }
 
-pre#output {
-  background: #f6f6f6;
-  border: 1px solid #ddd;
+/* Feedback area */
+.feedback-box {
+  margin: 20px auto;
   padding: 12px;
-  white-space: pre-wrap;
+  max-width: 600px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 15px;
+  text-align: left;       /* make explanations look like text blocks */
+  min-height: 40px;
+}
+
+/* Progress section */
+#progress {
+  list-style: none;   /* remove bullets */
+  padding: 0;
+}
+#progress li {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin: 6px auto;
+  padding: 8px;
+  max-width: 600px;
+  text-align: left;
+  font-size: 14px;
 }

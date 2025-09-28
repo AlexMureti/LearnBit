@@ -1,8 +1,9 @@
 // script.js
-// This file connects the simple HTML page to the server (server.js).
-// It has two main jobs:
+// Connects the HTML page to the server (server.js)
+// Jobs:
 // 1. Send the code you type (or later, speak) to the server
-// 2. Show the feedback in the feedback box
+// 2. Show feedback in the feedback box
+// 3. Speak the feedback out loud
 
 // function that sends the code to the server
 async function checkCode() {
@@ -18,12 +19,14 @@ async function checkCode() {
 
   // if nothing typed, show message
   if (!userCode) {
-    feedbackBox.textContent = "⚠️ Please type some code first.";
+    feedbackBox.textContent = "Please type some code first.";
+    speakText("Please type some code first.");
     return;
   }
 
   // show waiting message
-  feedbackBox.textContent = "⏳ Checking your code...";
+  feedbackBox.textContent = "Checking your code...";
+  speakText("Checking your code");
 
   try {
     // send request to our server
@@ -35,7 +38,9 @@ async function checkCode() {
 
     // if server says error
     if (!response.ok) {
-      feedbackBox.textContent = "❌ Server problem: " + response.status;
+      let errorMsg = "Server problem: " + response.status;
+      feedbackBox.textContent = errorMsg;
+      speakText(errorMsg);
       return;
     }
 
@@ -43,20 +48,43 @@ async function checkCode() {
     const data = await response.json();
 
     // show the feedback
-    feedbackBox.textContent = data.feedback || "⚠️ No feedback from mentor.";
+    let feedback = data.feedback || "No feedback from mentor.";
+    
+    speakText(feedback);
 
     // also add this to "My Progress" list
     const newItem = document.createElement("li");
     newItem.textContent = "You checked some code: " + userCode.slice(0, 30) + "...";
     progressList.appendChild(newItem);
   } catch (error) {
-    console.error("❌ Error talking to server:", error);
-    feedbackBox.textContent = "❌ Could not reach server. Is it running?";
+    console.error("Error talking to server:", error);
+    let errMsg = "Could not reach server. Is it running?";
+    feedbackBox.textContent = errMsg;
+    speakText(errMsg);
   }
 }
 
 // function for "Speak Code" button (not real yet, just a placeholder)
 function listenToUser() {
   const feedbackBox = document.getElementById("feedback");
-  feedbackBox.textContent = "🎤 Voice input not ready yet. Coming soon!";
+  let msg = "Voice input not ready yet. Coming soon!";
+  feedbackBox.textContent = msg;
+  speakText(msg);
 }
+
+// helper function: make the computer speak text
+function speakText(text) {
+  if ("speechSynthesis" in window) {
+    // stop anything already speaking before starting new
+    speechSynthesis.cancel();
+    let utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US"; // set language
+    speechSynthesis.speak(utterance);
+  } else {
+    console.log("This browser does not support speech synthesis.");
+  }
+}
+
+// add event listeners
+document.getElementById("checkBtn").addEventListener("click", checkCode);
+document.getElementById("speakBtn").addEventListener("click", listenToUser);

@@ -1,17 +1,3 @@
-// server.js
-// This is the brain that connects our webpage to the AI model (Ollama).
-// Steps:
-// 1. Start a small web server
-// 2. Accept code from the browser
-// 3. Send that code to Ollama (AI)
-// 4. Send AI feedback back to the browser
-
-const express = require("express");        // web server tool
-const bodyParser = require("body-parser"); // helps read JSON
-
-const app = express(); // make our app
-
-// middleware: tells app to understand JSON and show files in "public"
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
@@ -36,7 +22,7 @@ app.post("/check-code", async (req, res) => {
     if (!response.ok) {
       throw new Error("Ollama error: " + response.status);
     }
-
+    
     // read Ollama’s answer
     const data = await response.json();
 
@@ -57,4 +43,3 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log("🚀 Server is running at http://localhost:" + PORT);
 });
-
