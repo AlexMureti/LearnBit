@@ -49,7 +49,7 @@ async function checkCode() {
 
     // show the feedback
     let feedback = data.feedback || "No feedback from mentor.";
-    
+    feedbackBox.textContent = feedback;
     speakText(feedback);
 
     // also add this to "My Progress" list
@@ -86,5 +86,3 @@ function speakText(text) {
 }
 
 // add event listeners
-document.getElementById("checkBtn").addEventListener("click", checkCode);
-document.getElementById("speakBtn").addEventListener("click", listenToUser);

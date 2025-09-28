@@ -11,9 +11,9 @@ async function testHF() {
       { headers: { Authorization: `Bearer ${hfKey}` } }
     );
 
-    console.log("✅ HF replied:", response.data[0].generated_text);
+    console.log(" HF replied:", response.data[0].generated_text);
   } catch (err) {
-    console.error("❌ Hugging Face error:", err.response?.data || err.message);
+    console.error(" Hugging Face error:", err.response?.data || err.message);
   }
 }
 
