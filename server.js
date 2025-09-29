@@ -29,7 +29,7 @@ app.post("/check-code", async (req, res) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "learnbit", // model we want to use
-        prompt: `You are a friendly coding mentor.Learn about the user.Get to know them, then rquest them to paste their code so you check for errors and bugs. If there are any,address the errors andd advice them on areas to work on and materials to use. make sure it’s correct and nothing is missing (semicolons, commas, punctuation). Explain simply:\n\n${userCode}`,
+        prompt: `You are a friendly coding mentor.Learn about the user's needsg.Get to know them, then rquest them to paste their code so you check for errors and bugs. If there are any,address the errors andd advice them on areas to work on and materials to use. make sure it’s correct and nothing is missing (semicolons, commas, punctuation). Explain simply:\n\n${userCode}`,
         stream: false, // we want one answer, not pieces
       }),
     });
