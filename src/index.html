@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LearnBit</title>
+  <style>
+    /* styles.css - Clean, simple styling for LearnBit */
+
+    /* Page setup */
+    body {
+      font-family: Arial, sans-serif; /* clean, easy-to-read font */
+      background: #f0f0f0;           /* soft gray background */
+      max-width: 900px;              /* keep content narrow for readability */
+      margin: 20px auto;             /* center everything */
+      padding: 20px;
+      line-height: 1.5;
+      text-align: center;            /* center text for simplicity */
+    }
+
+    /* Header and footer */
+    header, footer {
+      margin-bottom: 20px;
+    }
+    header h1 {
+      margin-bottom: 5px;
+    }
+    .tagline {
+      font-size: 14px;
+      color: #555;
+    }
+    footer p {
+      font-size: 12px;
+      color: #777;
+    }
+
+    /* Code input box */
+    textarea {
+      width: 90%;             /* wide but responsive */
+      max-width: 600px;       /* don’t let it stretch too much */
+      height: 120px;
+      font-family: monospace; /* code-like font */
+      font-size: 14px;
+      padding: 8px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;       /* let user stretch vertically */
+    }
+
+    /* Buttons */
+    button {
+      padding: 10px 20px;
+      margin: 6px;
+      border: none;
+      border-radius: 4px;
+      background: #4a90e2;   /* calm blue */
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #357abd;   /* slightly darker on hover */
+    }
+
+    /* Feedback area */
+    .feedback-box {
+      margin: 20px auto;
+      padding: 12px;
+      max-width: 600px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 15px;
+      text-align: left;       /* make explanations look like text blocks */
+      min-height: 40px;
+    }
+
+    /* Progress section */
+    #progress {
+      list-style: none;   /* remove bullets */
+      padding: 0;
+    }
+    #progress li {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 6px auto;
+      padding: 8px;
+      max-width: 600px;
+      text-align: left;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LearnBit</h1>
+    <p class="tagline">Your coding Tutor</p>
+  </header>
+
+  <main>
+    <!-- Section for pasting or speaking code -->
+    <section id="codeSection">
+      <h2>Paste or Speak Your Code</h2>
+      <textarea id="code" placeholder="e.g., for(let i=0; i<5; i++)"></textarea>
+      <br>
+      <button id="checkBtn">Check Code</button>
+      <button id="speakBtn">Speak Code</button>
+      <div id="feedback" class="feedback-box"></div>
+    </section>
+
+    <!-- Section for progress -->
+    <section id="progressSection">
+      <h2>My Progress</h2>
+      <ul id="progress"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 LearnBit</p>
+  </footer>
+
+  <script>
+    // ----------------------------
+    // Function: checkCode()
+    // Called when user clicks the "Check Code" button
+    // Jobs:
+    // 1. Get user code
+    // 2. Fetch feedback from JSON (since GitHub Pages can't run a server)
+    // 3. Show feedback + speak it
+    // 4. Save progress
+    // ----------------------------
+    async function checkCode() {
+      const codeBox = document.getElementById("code");
+      const feedbackBox = document.getElementById("feedback");
+      const progressList = document.getElementById("progress");
+
+      let userCode = codeBox.value.trim();
+
+      // If nothing typed
+      if (userCode === "") {
+        feedbackBox.textContent = "Please type some code first.";
+        speakText("Please type some code first.");
+        return;
+      }
+
+      // Show waiting
+      feedbackBox.textContent = "Checking your code...";
+      speakText("Checking your code");
+
+      try {
+        // ✅ On GitHub Pages: fetch from static JSON file
+        const response = await fetch("feedback.json");
+        if (!response.ok) throw new Error("Could not load feedback.json");
+
+        const data = await response.json();
+
+        let feedback = data.feedback || "No feedback available.";
+        feedbackBox.textContent = feedback;
+        speakText(feedback);
+
+        // Track progress
+        let newItem = document.createElement("li");
+        newItem.textContent =
+          "You checked some code: " + userCode.slice(0, 30) + "...";
+        progressList.appendChild(newItem);
+
+      } catch (error) {
+        console.error(error);
+        feedbackBox.textContent = "⚠️ Could not load feedback.";
+        speakText("Could not load feedback");
+      }
+    }
+
+    // ----------------------------
+    // Function: listenToUser()
+    // Placeholder for "Speak Code" button
+    // ----------------------------
+    function listenToUser() {
+      const feedbackBox = document.getElementById("feedback");
+      let msg = "Voice input not ready yet. Coming soon!";
+      feedbackBox.textContent = msg;
+      speakText(msg);
+    }
+
+    // ----------------------------
+    // Function: speakText()
+    // Uses browser speech synthesis
+    // ----------------------------
+    function speakText(text) {
+      if ("speechSynthesis" in window) {
+        speechSynthesis.cancel(); // stop old speech
+        let utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "en-US";
+        speechSynthesis.speak(utterance);
+      } else {
+        console.log("This browser does not support speech synthesis.");
+      }
+    }
+
+    // ----------------------------
+    // Add event listeners
+    // ----------------------------
+    document.addEventListener("DOMContentLoaded", function () {
+      let checkBtn = document.getElementById("checkBtn");
+      let speakBtn = document.getElementById("speakBtn");
+
+      if (checkBtn) checkBtn.addEventListener("click", checkCode);
+      if (speakBtn) speakBtn.addEventListener("click", listenToUser);
+    });
+  </script>
+</body>
+</html>
