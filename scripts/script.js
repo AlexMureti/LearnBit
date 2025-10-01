@@ -6,7 +6,9 @@
 // 2. Sends it to the server to check
 // 3. Shows feedback on the page
 // 4. Reads the feedback out loud
+// ----------------------------
 
+// ----------------------------
 // Function: checkCode()
 // Called when user clicks the "Check Code" button
 // ----------------------------
@@ -35,8 +37,7 @@ async function checkCode() {
   speakText("Checking your code");
 
   try {
-    // 5. Send the code to our server using fetch
-    //    (fetch = make a request to another server)
+    // 5. Try sending the code to our server using fetch
     const response = await fetch("/check-code", {
       method: "POST", // POST means "send something"
       headers: { "Content-Type": "application/json" }, // tell server it's JSON
@@ -44,12 +45,7 @@ async function checkCode() {
     });
 
     // 6. If the server replies with an error (not 200 OK)
-    if (!response.ok) {
-      let errorMsg = "Server problem: " + response.status;
-      feedbackBox.textContent = errorMsg;
-      speakText(errorMsg);
-      return;
-    }
+    if (!response.ok) throw new Error("Server unavailable");
 
     // 7. Read the answer from the server as JSON
     const data = await response.json();
@@ -68,11 +64,29 @@ async function checkCode() {
     progressList.appendChild(newItem);
 
   } catch (error) {
-    // If something went wrong (server not running, etc.)
-    console.error("Error talking to server:", error);
-    let errMsg = "Could not reach server. Is it running?";
-    feedbackBox.textContent = errMsg;
-    speakText(errMsg);
+    // ----------------------------
+    // If something went wrong (server not running, GitHub Pages, etc.)
+    // → fallback to local JSON file
+    // ----------------------------
+    console.warn("Falling back to feedback.json because:", error.message);
+
+    try {
+      const fallback = await fetch("feedback.json");
+      const data = await fallback.json();
+      let feedback = data.feedback || "No feedback available (offline).";
+
+      feedbackBox.textContent = feedback;
+      speakText(feedback);
+
+      let newItem = document.createElement("li");
+      newItem.textContent =
+        "You checked some code (offline mode): " + userCode.slice(0, 30) + "...";
+      progressList.appendChild(newItem);
+    } catch (jsonErr) {
+      let errMsg = "Could not reach server or load feedback.json.";
+      feedbackBox.textContent = errMsg;
+      speakText(errMsg);
+    }
   }
 }
 
@@ -123,4 +137,3 @@ document.addEventListener("DOMContentLoaded", function () {
     speakBtn.addEventListener("click", listenToUser);
   }
 });
-// ----------------------------
