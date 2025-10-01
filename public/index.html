@@ -3,29 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>LearnBit</title>
-
-  <!--
-    LearnBit - Single File Version (for GitHub Pages)
-    -------------------------------------------------
-    This HTML file includes:
-      • HTML structure
-      • CSS styling (inline <style>)
-      • JavaScript (inline <script>)
-    It fetches a fake JSON file (feedback.json) instead of using Node/Express.
-
-    How it works on GitHub Pages:
-      1. User types code into the textarea.
-      2. When "Check Code" is clicked, we fetch feedback.json.
-      3. The feedback is displayed and spoken out loud using the browser's speech system.
-      4. Each check is recorded in the "My Progress" list.
-
-    Files you need in your repo:
-      • index.html   (this file)
-      • feedback.json (the fake feedback file)
-  -->
-
-  <!-- Inlined CSS -->
   <style>
+    /* styles.css - Clean, simple styling for LearnBit */
+
     /* Page setup */
     body {
       font-family: Arial, sans-serif; /* clean, easy-to-read font */
@@ -140,63 +120,52 @@
     <p>&copy; 2025 LearnBit</p>
   </footer>
 
-  <!-- Inlined JavaScript -->
   <script>
     // ----------------------------
     // Function: checkCode()
     // Called when user clicks the "Check Code" button
+    // Jobs:
+    // 1. Get user code
+    // 2. Fetch feedback from JSON (since GitHub Pages can't run a server)
+    // 3. Show feedback + speak it
+    // 4. Save progress
     // ----------------------------
     async function checkCode() {
-      // 1. Get the text area (where user types code)
       const codeBox = document.getElementById("code");
-
-      // 2. Get the feedback <div> (where feedback is shown)
       const feedbackBox = document.getElementById("feedback");
-
-      // 3. Get the progress <ul> (list where we track progress)
       const progressList = document.getElementById("progress");
 
-      // 4. Take what user typed (and remove extra spaces)
       let userCode = codeBox.value.trim();
 
-      // If nothing was typed, warn the user and stop here
+      // If nothing typed
       if (userCode === "") {
         feedbackBox.textContent = "Please type some code first.";
         speakText("Please type some code first.");
         return;
       }
 
-      // Show waiting message while we check
+      // Show waiting
       feedbackBox.textContent = "Checking your code...";
       speakText("Checking your code");
 
       try {
-        // 5. On GitHub Pages: fetch feedback from a static JSON file
+        // ✅ On GitHub Pages: fetch from static JSON file
         const response = await fetch("feedback.json");
+        if (!response.ok) throw new Error("Could not load feedback.json");
 
-        // 6. If we can’t load the file
-        if (!response.ok) {
-          throw new Error("Could not load feedback.json");
-        }
-
-        // 7. Read the JSON file
         const data = await response.json();
 
-        // 8. Show the feedback (or a default message if empty)
         let feedback = data.feedback || "No feedback available.";
         feedbackBox.textContent = feedback;
-
-        // 9. Speak the feedback out loud
         speakText(feedback);
 
-        // 10. Add this action to the "My Progress" list
+        // Track progress
         let newItem = document.createElement("li");
         newItem.textContent =
           "You checked some code: " + userCode.slice(0, 30) + "...";
         progressList.appendChild(newItem);
 
       } catch (error) {
-        // If something went wrong (JSON missing, etc.)
         console.error(error);
         feedbackBox.textContent = "⚠️ Could not load feedback.";
         speakText("Could not load feedback");
@@ -205,7 +174,7 @@
 
     // ----------------------------
     // Function: listenToUser()
-    // Placeholder for the "Speak Code" button
+    // Placeholder for "Speak Code" button
     // ----------------------------
     function listenToUser() {
       const feedbackBox = document.getElementById("feedback");
@@ -216,18 +185,13 @@
 
     // ----------------------------
     // Function: speakText()
-    // Uses the browser's speech system to read text out loud
+    // Uses browser speech synthesis
     // ----------------------------
     function speakText(text) {
       if ("speechSynthesis" in window) {
-        // Stop anything already speaking before starting new
-        speechSynthesis.cancel();
-
-        // Create a voice message
+        speechSynthesis.cancel(); // stop old speech
         let utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "en-US"; // language
-
-        // Speak it
+        utterance.lang = "en-US";
         speechSynthesis.speak(utterance);
       } else {
         console.log("This browser does not support speech synthesis.");
@@ -235,21 +199,41 @@
     }
 
     // ----------------------------
-    // Add event listeners when the page loads
+    // Add event listeners
     // ----------------------------
     document.addEventListener("DOMContentLoaded", function () {
       let checkBtn = document.getElementById("checkBtn");
       let speakBtn = document.getElementById("speakBtn");
 
-      // Link the buttons to their functions
-      if (checkBtn) {
-        checkBtn.addEventListener("click", checkCode);
-      }
-
-      if (speakBtn) {
-        speakBtn.addEventListener("click", listenToUser);
-      }
+      if (checkBtn) checkBtn.addEventListener("click", checkCode);
+      if (speakBtn) speakBtn.addEventListener("click", listenToUser);
     });
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Page</title>
+</head>
+<body>
+  <h1>It works!</h1>
+  <div id="feedback">No feedback yet</div>
+  <button onclick="checkCode()">Check Code</button>
+
+  <script>
+  async function checkCode() {
+    try {
+      const response = await fetch('feedback.json');
+      if (!response.ok) throw new Error('Could not load feedback.json');
+      const data = await response.json();
+      document.getElementById('feedback').textContent = data.feedback;
+    } catch (err) {
+      document.getElementById('feedback').textContent = 'Error: ' + err.message;
+    }
+  }
+  </script>
+</body>
+</html>
+
