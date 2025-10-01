@@ -3,8 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <title>LearnBit</title>
-  <link rel="stylesheet" href="/styles/styles.css">
-  <script src="/scripts/script.js" defer></script>
+  
+  <!-- Inlined CSS -->
+  <style>
+    /* Page setup */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    header, footer {
+      margin-bottom: 20px;
+    }
+    header h1 {
+      margin-bottom: 5px;
+    }
+    .tagline {
+      font-size: 14px;
+      color: #555;
+    }
+    footer p {
+      font-size: 12px;
+      color: #777;
+    }
+
+    textarea {
+      width: 90%;
+      max-width: 600px;
+      height: 120px;
+      font-family: monospace;
+      font-size: 14px;
+      padding: 8px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 6px;
+      border: none;
+      border-radius: 4px;
+      background: #4a90e2;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #357abd;
+    }
+
+    .feedback-box {
+      margin: 20px auto;
+      padding: 12px;
+      max-width: 600px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 15px;
+      text-align: left;
+      min-height: 40px;
+    }
+
+    #progress {
+      list-style: none;
+      padding: 0;
+    }
+    #progress li {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 6px auto;
+      padding: 8px;
+      max-width: 600px;
+      text-align: left;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -33,5 +114,81 @@
   <footer>
     <p>&copy; 2025 LearnBit</p>
   </footer>
+
+  <!-- Inlined JavaScript -->
+  <script>
+    async function checkCode() {
+      const codeBox = document.getElementById("code");
+      const feedbackBox = document.getElementById("feedback");
+      const progressList = document.getElementById("progress");
+
+      let userCode = codeBox.value.trim();
+      if (userCode === "") {
+        feedbackBox.textContent = "Please type some code first.";
+        speakText("Please type some code first.");
+        return;
+      }
+
+      feedbackBox.textContent = "Checking your code...";
+      speakText("Checking your code");
+
+      try {
+        const response = await fetch("/check-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: userCode })
+        });
+
+        if (!response.ok) {
+          let errorMsg = "Server problem: " + response.status;
+          feedbackBox.textContent = errorMsg;
+          speakText(errorMsg);
+          return;
+        }
+
+        const data = await response.json();
+        let feedback = data.feedback || "No feedback from mentor.";
+        feedbackBox.textContent = feedback;
+        speakText(feedback);
+
+        let newItem = document.createElement("li");
+        newItem.textContent =
+          "You checked some code: " + userCode.slice(0, 30) + "...";
+        progressList.appendChild(newItem);
+
+      } catch (error) {
+        console.error("Error talking to server:", error);
+        let errMsg = "Could not reach server. Is it running?";
+        feedbackBox.textContent = errMsg;
+        speakText(errMsg);
+      }
+    }
+
+    function listenToUser() {
+      const feedbackBox = document.getElementById("feedback");
+      let msg = "Voice input not ready yet. Coming soon!";
+      feedbackBox.textContent = msg;
+      speakText(msg);
+    }
+
+    function speakText(text) {
+      if ("speechSynthesis" in window) {
+        speechSynthesis.cancel();
+        let utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "en-US";
+        speechSynthesis.speak(utterance);
+      } else {
+        console.log("This browser does not support speech synthesis.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      let checkBtn = document.getElementById("checkBtn");
+      let speakBtn = document.getElementById("speakBtn");
+
+      if (checkBtn) checkBtn.addEventListener("click", checkCode);
+      if (speakBtn) speakBtn.addEventListener("click", listenToUser);
+    });
+  </script>
 </body>
 </html>
