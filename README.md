@@ -127,11 +127,4 @@ This project is licensed under the MIT License.
 ## Author
 Alex Mureti Maingi**
 Helping software engineering students learn **smarter, not slower**.
-
-```
-
----
-
-👉 Do you also want me to generate the **MIT LICENSE file** alongside this so it’s fully ready?
-```
  
